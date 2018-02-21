@@ -3,12 +3,7 @@ package com.new_york_times.nytimes.model;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.annotations.Expose;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by user on 17.02.2018.
@@ -39,10 +34,17 @@ public class Article {
     @SerializedName("source")
     @Expose
     private String source;
-/*
+
     @SerializedName("media")
-    @Expose
-    private List<Media> media;*/
+    private MediaList media;
+
+    public MediaList getMedia() {
+        return media;
+    }
+
+    public void setMedia(MediaList media) {
+        this.media = media;
+    }
 
     public Article(String url, String countType, String section, String byLine, String title, String abstractText, Date publishedDate, String source) {
         this.url = url;
@@ -123,15 +125,8 @@ public class Article {
         this.source = source;
     }
 
-  /*  public List<Media> getMedia() {
-        return media;
-    }
 
-    public void setMedia(List<Media> media) {
-        this.media = media;
-    }
-
- */   @Override
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
 

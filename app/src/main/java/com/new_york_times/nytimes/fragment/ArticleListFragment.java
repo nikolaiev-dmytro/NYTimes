@@ -12,11 +12,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.new_york_times.nytimes.NYTimesAPI;
-import com.new_york_times.nytimes.NYTimesAPIClient;
+import com.new_york_times.nytimes.retrofit.NYTimesAPI;
+import com.new_york_times.nytimes.retrofit.NYTimesAPIClient;
 import com.new_york_times.nytimes.R;
-import com.new_york_times.nytimes.RecyclerViewAdapter;
-import com.new_york_times.nytimes.ResultResponse;
+import com.new_york_times.nytimes.adapter.RecyclerViewAdapter;
+import com.new_york_times.nytimes.retrofit.ResultResponse;
 import com.new_york_times.nytimes.model.Article;
 
 import java.net.HttpURLConnection;
@@ -31,7 +31,7 @@ import retrofit2.Response;
  * A simple {@link Fragment} subclass.
  */
 public class ArticleListFragment extends Fragment {
-    private List<Article> articleList=new ArrayList<>();
+    private List<Article> articleList = new ArrayList<>();
     private RecyclerView mRecyclerView;
     private RecyclerViewAdapter mAdapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -56,8 +56,6 @@ public class ArticleListFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null && savedInstanceState.containsKey(BUNDLE_TYPE)) {
             this.setTypeOfContent(savedInstanceState.getString(BUNDLE_TYPE));
-        } else {
-            Toast.makeText(getContext(), "OnCreate error", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -90,11 +88,11 @@ public class ArticleListFragment extends Fragment {
         responseCall.enqueue(new Callback<ResultResponse>() {
             @Override
             public void onResponse(Call<ResultResponse> call, Response<ResultResponse> response) {
-                int statusCode=response.code();
-                if (statusCode== HttpURLConnection.HTTP_OK){
-                    articleList=response.body().getArticles();
+                int statusCode = response.code();
+                if (statusCode == HttpURLConnection.HTTP_OK) {
+                    articleList = response.body().getArticles();
 
-                    mAdapter=new RecyclerViewAdapter(articleList);
+                    mAdapter = new RecyclerViewAdapter(articleList, getActivity());
                     mRecyclerView.setAdapter(mAdapter);
 
                 }
@@ -103,8 +101,8 @@ public class ArticleListFragment extends Fragment {
 
             @Override
             public void onFailure(Call<ResultResponse> call, Throwable t) {
-                Log.e("ArticleListFragment",t.toString());
-                Toast.makeText(getContext(),"Loading error", Toast.LENGTH_SHORT).show();
+                Log.e("ArticleListFragment", t.toString());
+                Toast.makeText(getContext(), "Loading error", Toast.LENGTH_SHORT).show();
             }
         });
         mSwipeRefreshLayout.setRefreshing(false);

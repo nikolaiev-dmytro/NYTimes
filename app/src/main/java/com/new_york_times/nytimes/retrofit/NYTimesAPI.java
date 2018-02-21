@@ -1,4 +1,4 @@
-package com.new_york_times.nytimes;
+package com.new_york_times.nytimes.retrofit;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

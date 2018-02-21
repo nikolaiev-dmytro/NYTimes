@@ -10,7 +10,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  * Created by user on 18.02.2018.
  */
 
-class MediaMetaData {
+public class MetaData {
 
     @SerializedName("url")
     @Expose
@@ -27,7 +27,7 @@ class MediaMetaData {
 
     @Override
     public String toString() {
-        return "MediaMetaData{" +
+        return "MetaData{" +
                 "url='" + url + '\'' +
                 ", format='" + format + '\'' +
                 ", height=" + height +
@@ -41,7 +41,7 @@ class MediaMetaData {
 
         if (o == null || getClass() != o.getClass()) return false;
 
-        MediaMetaData that = (MediaMetaData) o;
+        MetaData that = (MetaData) o;
 
         return new EqualsBuilder()
                 .append(height, that.height)
@@ -94,7 +94,7 @@ class MediaMetaData {
         this.width = width;
     }
 
-    public MediaMetaData(String url, String format, int height, int width) {
+    public MetaData(String url, String format, int height, int width) {
 
         this.url = url;
         this.format = format;
@@ -102,7 +102,7 @@ class MediaMetaData {
         this.width = width;
     }
 
-    public MediaMetaData() {
+    public MetaData() {
 
     }
 }

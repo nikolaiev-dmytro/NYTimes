@@ -1,4 +1,4 @@
-package com.new_york_times.nytimes;
+package com.new_york_times.nytimes.retrofit;
 
 import com.google.gson.annotations.SerializedName;
 import com.new_york_times.nytimes.model.Article;

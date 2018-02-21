@@ -1,4 +1,4 @@
-package com.new_york_times.nytimes;
+package com.new_york_times.nytimes.adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

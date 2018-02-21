@@ -2,13 +2,11 @@ package com.new_york_times.nytimes.activity;
 
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 
 import com.new_york_times.nytimes.R;
-import com.new_york_times.nytimes.TabsPagerAdapter;
+import com.new_york_times.nytimes.adapter.TabsPagerAdapter;
 import com.new_york_times.nytimes.fragment.ArticleListFragment;
 
 public class MainActivity extends AppCompatActivity {

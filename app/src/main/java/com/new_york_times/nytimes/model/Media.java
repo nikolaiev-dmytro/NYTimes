@@ -6,13 +6,13 @@ import com.google.gson.annotations.SerializedName;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Created by user on 18.02.2018.
  */
 
-class Media {
+public class Media {
 
     @SerializedName("type")
     @Expose
@@ -31,7 +31,7 @@ class Media {
     private int approvedForSyndication;
     @SerializedName("media-metadata")
     @Expose
-    private List<MediaMetaData> mediaMetadata;
+    private MetaDataList mediaMetadata;
 
     public Media() {
     }
@@ -84,11 +84,11 @@ class Media {
         this.approvedForSyndication = approvedForSyndication;
     }
 
-    public List<MediaMetaData> getMediaMetadata() {
+    public MetaDataList getMediaMetadata() {
         return mediaMetadata;
     }
 
-    public void setMediaMetadata(List<MediaMetaData> mediaMetadata) {
+    public void setMediaMetadata(MetaDataList mediaMetadata) {
         this.mediaMetadata = mediaMetadata;
     }
 
