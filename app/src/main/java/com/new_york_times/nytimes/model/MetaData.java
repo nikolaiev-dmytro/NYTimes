@@ -11,7 +11,8 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  */
 
 public class MetaData {
-
+    private long id;
+    private long mediaId;
     @SerializedName("url")
     @Expose
     private String url;
@@ -66,6 +67,14 @@ public class MetaData {
         return url;
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public void setUrl(String url) {
         this.url = url;
     }
@@ -104,5 +113,13 @@ public class MetaData {
 
     public MetaData() {
 
+    }
+
+    public long getMediaId() {
+        return mediaId;
+    }
+
+    public void setMediaId(long mediaId) {
+        this.mediaId = mediaId;
     }
 }

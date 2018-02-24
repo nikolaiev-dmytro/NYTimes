@@ -3,13 +3,14 @@ package com.new_york_times.nytimes.model;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.annotations.Expose;
 
+import java.text.DateFormat;
 import java.util.Date;
 
 /**
  * Created by user on 17.02.2018.
  */
 public class Article {
-
+    private long id;
     @SerializedName("url")
     @Expose
     private String url;
@@ -38,14 +39,6 @@ public class Article {
     @SerializedName("media")
     private MediaList media;
 
-    public MediaList getMedia() {
-        return media;
-    }
-
-    public void setMedia(MediaList media) {
-        this.media = media;
-    }
-
     public Article(String url, String countType, String section, String byLine, String title, String abstractText, Date publishedDate, String source) {
         this.url = url;
         this.countType = countType;
@@ -59,6 +52,22 @@ public class Article {
 
     public Article() {
 
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public MediaList getMedia() {
+        return media;
+    }
+
+    public void setMedia(MediaList media) {
+        this.media = media;
     }
 
     public String getUrl() {

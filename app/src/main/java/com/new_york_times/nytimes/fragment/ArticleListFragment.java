@@ -31,18 +31,22 @@ import retrofit2.Response;
  * A simple {@link Fragment} subclass.
  */
 public class ArticleListFragment extends Fragment {
-    private List<Article> articleList = new ArrayList<>();
-    private RecyclerView mRecyclerView;
-    private RecyclerViewAdapter mAdapter;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
+    protected List<Article> articleList = new ArrayList<>();
+    protected RecyclerView mRecyclerView;
+    protected RecyclerViewAdapter mAdapter;
+    protected SwipeRefreshLayout mSwipeRefreshLayout;
     private static String sApiKey = "0b5c83873d5e406ab0d912d4748bad41";
-    private String mTypeOfContent;
-    private static final String BUNDLE_TYPE = "bundle_type_of_content";
-    private String mNameOfTab;
+    protected String mTypeOfContent;
+    protected static final String BUNDLE_TYPE = "bundle_type_of_content";
+    protected String mNameOfTab;
 
     public void setTypeOfContent(String mTypeOfContent) {
         this.mTypeOfContent = mTypeOfContent;
         mNameOfTab = mTypeOfContent.substring(4).toUpperCase();
+    }
+
+    public void setmNameOfTab(String nameOfTab) {
+        this.mNameOfTab = nameOfTab;
     }
 
     @Override
@@ -82,7 +86,7 @@ public class ArticleListFragment extends Fragment {
         refresh();
     }
 
-    private void refresh() {
+    protected void refresh() {
         NYTimesAPI nyTimesAPI = NYTimesAPIClient.getRetrofit().create(NYTimesAPI.class);
         Call<ResultResponse> responseCall = nyTimesAPI.getResult(mTypeOfContent, "all-sections", 30, sApiKey);
         responseCall.enqueue(new Callback<ResultResponse>() {

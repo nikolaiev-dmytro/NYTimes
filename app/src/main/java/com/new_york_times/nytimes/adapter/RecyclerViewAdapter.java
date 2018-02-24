@@ -9,10 +9,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.new_york_times.nytimes.R;
 import com.new_york_times.nytimes.activity.ArticleInformationActivity;
+import com.new_york_times.nytimes.database.DataBaseHelper;
 import com.new_york_times.nytimes.model.Article;
 import com.new_york_times.nytimes.model.MetaData;
 import com.new_york_times.nytimes.model.MetaDataList;
@@ -98,6 +100,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 intent.putExtra(ARTICLE_IMAGE_CAPTION,holder.article.getMedia().get(0).getCaption());
                 intent.putExtra(ARTICLE_IMAGE_COPYRIGHT,holder.article.getMedia().get(0).getCopyright());
                 context.startActivity(intent);
+            }
+        });
+        holder.mCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                DataBaseHelper db=new DataBaseHelper(context);
+                if (isChecked){
+                    db.addArticle(articleList.get(holder.getAdapterPosition()));
+                }
             }
         });
     }

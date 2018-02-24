@@ -13,7 +13,8 @@ import java.util.ArrayList;
  */
 
 public class Media {
-
+    private long id;
+    private long articleID;
     @SerializedName("type")
     @Expose
     private String type;
@@ -42,6 +43,14 @@ public class Media {
         this.caption = caption;
         this.copyright = copyright;
         this.approvedForSyndication = approvedForSyndication;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getType() {
@@ -129,5 +138,13 @@ public class Media {
                 ", copyright='" + copyright + '\'' +
                 ", approvedForSyndication=" + approvedForSyndication +
                 '}';
+    }
+
+    public long getArticleID() {
+        return articleID;
+    }
+
+    public void setArticleID(long articleID) {
+        this.articleID = articleID;
     }
 }
