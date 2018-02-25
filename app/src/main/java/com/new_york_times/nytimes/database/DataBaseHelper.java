@@ -3,6 +3,7 @@ package com.new_york_times.nytimes.database;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.CursorIndexOutOfBoundsException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -119,16 +120,16 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         articleValues.put(COLUMN_DATE, article.getPublishedDate().toString());
         long articleId = db.insert(TABLE_NAME_ARTICLES, null, articleValues);
         article.setId(articleId);
-        if (article.getMedia().contains(null)) {
-            return;
-        }
-        for (Media media : article.getMedia()) {
-            media.setArticleID(articleId);
-            addMedia(media, media.getArticleID());
-            for (MetaData metaData : media.getMediaMetadata()) {
-                metaData.setMediaId(media.getId());
-                addMetaData(metaData, metaData.getMediaId());
+        try {
+            for (Media media : article.getMedia()) {
+                media.setArticleID(articleId);
+                addMedia(media, media.getArticleID());
+                for (MetaData metaData : media.getMediaMetadata()) {
+                    metaData.setMediaId(media.getId());
+                    addMetaData(metaData, metaData.getMediaId());
+                }
             }
+        } catch (NullPointerException ex) {
         }
 
     }
@@ -225,8 +226,12 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                     e.printStackTrace();
                 }
                 article.setSource(cursor.getString(8));
-                MediaList mediaList = getMedias(article.getId());
-                article.setMedia(mediaList);
+                try {
+                    MediaList mediaList = getMedias(article.getId());
+                    article.setMedia(mediaList);
+                } catch (NullPointerException ex) {
+                } catch (CursorIndexOutOfBoundsException ex) {
+                }
                 articleList.add(article);
             } while (cursor.moveToNext());
         db.close();
