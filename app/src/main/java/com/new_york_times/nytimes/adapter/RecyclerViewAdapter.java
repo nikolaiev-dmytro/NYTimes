@@ -36,8 +36,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public static final String ARTICLE_BYLINE = "article_byline";
     public static final String ARTICLE_ABSTRACT = "article_abstract";
     public static final String ARTICLE_IMAGE_URL = "article_image_url";
-    public static final String ARTICLE_IMAGE_CAPTION="article_image_caption";
-    public static final String ARTICLE_IMAGE_COPYRIGHT="article_image_copyright";
+    public static final String ARTICLE_IMAGE_CAPTION = "article_image_caption";
+    public static final String ARTICLE_IMAGE_COPYRIGHT = "article_image_copyright";
 
     public RecyclerViewAdapter(List<Article> articleList, Context context) {
         this.articleList = articleList;
@@ -97,17 +97,27 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     }
                     intent.putExtra(ARTICLE_IMAGE_URL, holder.article.getMedia().get(0).getMediaMetadata().get(formatIndex).getUrl());
                 }
-                intent.putExtra(ARTICLE_IMAGE_CAPTION,holder.article.getMedia().get(0).getCaption());
-                intent.putExtra(ARTICLE_IMAGE_COPYRIGHT,holder.article.getMedia().get(0).getCopyright());
+                intent.putExtra(ARTICLE_IMAGE_CAPTION, holder.article.getMedia().get(0).getCaption());
+                intent.putExtra(ARTICLE_IMAGE_COPYRIGHT, holder.article.getMedia().get(0).getCopyright());
                 context.startActivity(intent);
             }
         });
+        DataBaseHelper db = new DataBaseHelper(context);
+        if (db.checkArticleInDB(articleList.get(position))) {
+            holder.mCheckBox.setChecked(true);
+        } else {
+            holder.mCheckBox.setChecked(false);
+        }
         holder.mCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                DataBaseHelper db=new DataBaseHelper(context);
-                if (isChecked){
-                    db.addArticle(articleList.get(holder.getAdapterPosition()));
+                DataBaseHelper db = new DataBaseHelper(context);
+                if (isChecked) {
+                    if (!db.checkArticleInDB(articleList.get(holder.getAdapterPosition()))) {
+                        db.addArticle(articleList.get(holder.getAdapterPosition()));
+                    }
+                } else {
+                    db.deleteArticle(articleList.get(holder.getAdapterPosition()));
                 }
             }
         });

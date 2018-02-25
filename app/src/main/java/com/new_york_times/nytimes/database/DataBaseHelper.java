@@ -119,6 +119,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         articleValues.put(COLUMN_DATE, article.getPublishedDate().toString());
         long articleId = db.insert(TABLE_NAME_ARTICLES, null, articleValues);
         article.setId(articleId);
+        if (article.getMedia().contains(null)) {
+            return;
+        }
         for (Media media : article.getMedia()) {
             media.setArticleID(articleId);
             addMedia(media, media.getArticleID());
@@ -131,13 +134,33 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     }
 
     public void deleteArticle(Article article) {
+        try {
+            for (Media media : article.getMedia()) {
+                if (media != null) {
+                    deleteMetaData(media.getId());
+                }
+            }
+            deleteMedia(article.getId());
+        } catch (NullPointerException ex) {
 
+        }
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_NAME_ARTICLES, _ID + "=" + article.getId(), null);
+        db.close();
     }
 
-    public void checkArticleInDB(Article article) {
-
+    public boolean checkArticleInDB(Article article) {
+        boolean check = false;
+        SQLiteDatabase db = this.getReadableDatabase();
+        List<Article> articleList = getArticles();
+        for (Article articleCheck : articleList) {
+            if (article.getUrl().equals(articleCheck.getUrl())) {
+                check = true;
+            }
+        }
+        db.close();
+        return check;
     }
-
 
 
     public void addMedia(Media media, long articleId) {
@@ -156,8 +179,10 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public void deleteMedia(Media media) {
-
+    public void deleteMedia(long articleId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_NAME_MEDIA, COLUMN_ARTICLE_ID + "=" + articleId, null);
+        db.close();
     }
 
     public void addMetaData(MetaData metaData, long mediaId) {
@@ -172,8 +197,10 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         metaData.setId(metaDataId);
     }
 
-    public void deleteMetaData(MetaData metaData) {
-
+    public void deleteMetaData(long mediaId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_NAME_METADATA, COLUMN_MEDIA_ID + "=" + mediaId, null);
+        db.close();
     }
 
     public List<Article> getArticles() {
@@ -181,35 +208,35 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         String selectAllArticles = "select * from " + TABLE_NAME_ARTICLES;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectAllArticles, null);
-        SimpleDateFormat format=new SimpleDateFormat("EEE MMM dd hh:mm:ss zzz yyyy", Locale.ENGLISH);
+        SimpleDateFormat format = new SimpleDateFormat("EEE MMM dd hh:mm:ss zzz yyyy", Locale.ENGLISH);
         if (cursor.moveToFirst())
-        do {
-            Article article = new Article();
-            article.setId(cursor.getLong(0));
-            article.setUrl(cursor.getString(1));
-            article.setTitle(cursor.getString(2));
-            article.setCountType(cursor.getString(3));
-            article.setSection(cursor.getString(4));
-            article.setByLine(cursor.getString(5));
-            article.setAbstractText(cursor.getString(6));
-            try {
-                article.setPublishedDate(format.parse(cursor.getString(7)));
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            article.setSource(cursor.getString(8));
-            MediaList mediaList=getMedias(article.getId());
-            article.setMedia(mediaList);
-            articleList.add(article);
-        } while (cursor.moveToNext());
+            do {
+                Article article = new Article();
+                article.setId(cursor.getLong(0));
+                article.setUrl(cursor.getString(1));
+                article.setTitle(cursor.getString(2));
+                article.setCountType(cursor.getString(3));
+                article.setSection(cursor.getString(4));
+                article.setByLine(cursor.getString(5));
+                article.setAbstractText(cursor.getString(6));
+                try {
+                    article.setPublishedDate(format.parse(cursor.getString(7)));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                article.setSource(cursor.getString(8));
+                MediaList mediaList = getMedias(article.getId());
+                article.setMedia(mediaList);
+                articleList.add(article);
+            } while (cursor.moveToNext());
         db.close();
         return articleList;
     }
 
     public MediaList getMedias(long articleId) {
-        MediaList mediaList=new MediaList();
-        String selectAllMedia = "select * from " + TABLE_NAME_MEDIA+" where " +
-                COLUMN_ARTICLE_ID+"=" +
+        MediaList mediaList = new MediaList();
+        String selectAllMedia = "select * from " + TABLE_NAME_MEDIA + " where " +
+                COLUMN_ARTICLE_ID + "=" +
                 articleId;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectAllMedia, null);
@@ -223,7 +250,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             media.setCopyright(cursor.getString(4));
             media.setApprovedForSyndication(cursor.getInt(5));
             media.setArticleID(cursor.getLong(6));
-            MetaDataList metaDataList=getMetaDatas(media.getId());
+            MetaDataList metaDataList = getMetaDatas(media.getId());
             media.setMediaMetadata(metaDataList);
             mediaList.add(media);
         } while (cursor.moveToNext());
@@ -232,9 +259,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     }
 
     public MetaDataList getMetaDatas(long mediaId) {
-        MetaDataList metaDataList=new MetaDataList();
-        String selectAllMetadata = "select * from " + TABLE_NAME_METADATA +" where " +
-                COLUMN_MEDIA_ID+"=" +
+        MetaDataList metaDataList = new MetaDataList();
+        String selectAllMetadata = "select * from " + TABLE_NAME_METADATA + " where " +
+                COLUMN_MEDIA_ID + "=" +
                 mediaId;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectAllMetadata, null);
@@ -251,5 +278,13 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         } while (cursor.moveToNext());
         db.close();
         return metaDataList;
+    }
+
+    public void cleanDatabase() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_NAME_METADATA, null, null);
+        db.delete(TABLE_NAME_MEDIA, null, null);
+        db.delete(TABLE_NAME_ARTICLES, null, null);
+        db.close();
     }
 }

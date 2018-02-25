@@ -39,7 +39,9 @@ public class MainActivity extends AppCompatActivity {
         mViewPager.setAdapter(mTabsPagerAdapter);
         mTabLayout=(TabLayout) findViewById(R.id.tab_layout);
         mTabLayout.setupWithViewPager(mViewPager);
-
+        /*DataBaseHelper dataBaseHelper=new DataBaseHelper(getApplicationContext());
+        dataBaseHelper.cleanDatabase();
+*/
 
     }
 }
